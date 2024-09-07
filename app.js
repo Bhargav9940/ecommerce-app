@@ -1,11 +1,12 @@
 //Express for REST APIs
 const express = require("express");
 const morgan = require("morgan");
+const helmet = require("helmet");
+const mongoSanitize = require('express-mongo-sanitize');
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const cloudinary = require("cloudinary");
 const connectDB = require("./config/db");
-
 
 
 //Should be above all 
@@ -27,6 +28,10 @@ cloudinary.v2.config({
 const app = express();
 
 //middleware
+
+
+app.use(helmet());        //for securing header
+app.use(mongoSanitize());    //middleware which sanitizes user-supplied data to prevent MongoDB Operator Injection.
 app.use(morgan("dev"));          //to print log of requests
 app.use(express.json());          //to handle json data
 app.use(cors());                   //to bind backend with frontend
@@ -39,13 +44,11 @@ app.set('view engine', 'ejs');
 
 
 //route
-const testRoutes = require("./routes/testRoutes");
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
-app.use("/api/v1", testRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/product", productRoutes);
 app.use("/api/v1/cat", categoryRoutes);

@@ -6,7 +6,8 @@ const { getAllProductsController,
         updateProductImgController, 
         deleteproductImageController,
         deleteProductController,
-        productReviewController} = require("../controllers/productController");
+        productReviewController,
+        getTopProductsController} = require("../controllers/productController");
 const {isAuth, isAdmin} = require("../middlewares/isAuthenticated");
 const singleUpload = require("../middlewares/multer");
 const router = express.Router();
@@ -14,6 +15,9 @@ const router = express.Router();
 //routes
 //get all
 router.get("/get-all", getAllProductsController);
+
+//get top products
+router.get("/top", getTopProductsController);
 
 //get single
 router.get("/:id", getProductController);

@@ -33,6 +33,26 @@ const getAllProductsController = async (req, res) => {
     }
 };
 
+//get top products
+const getTopProductsController = async (req, res) => {
+    try {
+        const products = await productModel.find({}).sort({rating: -1}).limit(3);
+        res.status(200).send({
+            success: true,
+            message: "Top 3 products fetched successfully",
+            products
+        });
+    }
+    catch(error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            messagge: "Error in get top products API",
+            error
+        });
+    }
+}
+
 //get single product
 const getProductController = async (req, res) => {
     try {
@@ -357,5 +377,6 @@ module.exports = {
     updateProductImgController,
     deleteproductImageController,
     deleteProductController,
-    productReviewController
+    productReviewController,
+    getTopProductsController
 }
