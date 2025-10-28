@@ -2,9 +2,17 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const cookieParser = require('cookie-parser');
+require('dotenv').config();
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public'))); 
 app.use(cookieParser());
+
+app.get('/config.js', (req, res) => {
+  res.type("application/javascript");
+  res.send(`window.CONFIG = { BACKEND_BASE_URL: "${process.env.BACKEND_BASE_URL}",
+                              FRONTEND_BASE_URL: "${process.env.FRONTEND_BASE_URL}",
+                              PORT: "${process.env.PORT}"};`);
+});
 
 app.get('/navbar', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'navbar.html'));
@@ -90,5 +98,5 @@ app.get('/my-profile/edit', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on PORT:${PORT}`);
 });

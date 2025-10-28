@@ -12,6 +12,7 @@
     />
     <title>Cart</title>
   </head>
+  <script src="/config.js"></script>
   <script src="/scripts/navbar.js"></script>
   <body>
     <div id="cart-container">
@@ -28,13 +29,14 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="/config.js"></script>
     <script>
       //navbar
       const body = document.body;
       let user;
 
       //Authenticating
-      fetch(`${process.env.BACKEND_BASE_URL}/user/verify`, {
+      fetch(`${window.CONFIG.BACKEND_BASE_URL}/user/verify`, {
         credentials: "include",
       })
         .then((res) => res.json())
@@ -45,7 +47,7 @@
           user = res.user;
 
           //fetch cart
-          fetch(`${process.env.BACKEND_BASE_URL}/cart/getCart`, {
+          fetch(`${window.CONFIG.BACKEND_BASE_URL}/cart/getCart`, {
             credentials: "include",
           })
             .then((res) => {
@@ -57,7 +59,7 @@
             .then((res => {
               const buyNowBtn = document.getElementById("buy-now-btn-cart");
               buyNowBtn.addEventListener("click", () => {
-                window.location.href=`${process.env.FRONTEND_BASE_URL}/cart/checkout/?mode=cart`;
+                window.location.href=`${window.CONFIG.FRONTEND_BASE_URL}/cart/checkout/?mode=cart`;
               });
             }))
         })
@@ -66,7 +68,7 @@
             <h3>An error occured</h3> 
             <h5>Error in Authentication</h5>
             <h4>${error}</h4>
-            <a href="${process.env.FRONTEND_BASE_URL}/home">Click to go to Homepage</a>
+            <a href="${window.CONFIG.FRONTEND_BASE_URL}/home">Click to go to Homepage</a>
             `;
         });
 
@@ -101,7 +103,7 @@
                 </div>
                       <div class="col-md-8">
                         <div class="card-body">
-                          <h5 class="card-title"><a href="${process.env.FRONTEND_BASE_URL}/product/?id=${item.productId}">${item.name}</a></h5>
+                          <h5 class="card-title"><a href="${window.CONFIG.FRONTEND_BASE_URL}/product/?id=${item.productId}">${item.name}</a></h5>
                           <div class="quantity-container">
                             <div class="btn-quantity" onclick="decreasQuantity('${item.productId}')">-</div>
                             <div class="btn-quantity-text">${item.quantity}</div>
@@ -155,7 +157,7 @@
       }
 
       function increaseQuantity(productId) {
-        fetch(`${process.env.BACKEND_BASE_URL}/cart/addItem/${productId}`, {
+        fetch(`${window.CONFIG.BACKEND_BASE_URL}/cart/addItem/${productId}`, {
           credentials: 'include', 
           method:'POST'
         })
@@ -168,7 +170,7 @@
       }
 
       function decreasQuantity(productId) {
-        fetch(`${process.env.BACKEND_BASE_URL}/cart/removeItem/${productId}`, {credentials: 'include', method:'POST'})
+        fetch(`${window.CONFIG.BACKEND_BASE_URL}/cart/removeItem/${productId}`, {credentials: 'include', method:'POST'})
         .then(() => {
           window.location.reload();
         })

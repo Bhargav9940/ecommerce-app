@@ -12,6 +12,7 @@
     />
     <title>Orders</title>
   </head>
+  <script src="/config.js"></script>
   <script src="/scripts/navbar.js" defer></script>
   <body>
     <div id="orders-outer-container" class="p-5">
@@ -48,7 +49,7 @@
           let user;
 
           const verifyRes = await fetch(
-            `${process.env.BACKEND_BASE_URL}/user/verify`,
+            `${window.CONFIG.BACKEND_BASE_URL}/user/verify`,
             {
               credentials: "include",
             }
@@ -60,7 +61,7 @@
 
           //fetch orders from backend
           const ordersRes = await fetch(
-            `${process.env.BACKEND_BASE_URL}/order/my-orders`,
+            `${window.CONFIG.BACKEND_BASE_URL}/order/my-orders`,
             {
               credentials: "include",
             }

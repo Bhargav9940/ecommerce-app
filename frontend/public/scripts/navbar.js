@@ -6,9 +6,8 @@ async function loadNavbar() {
         navbarDiv.innerHTML = html;
 
         document.body.insertBefore(navbarDiv, document.body.firstChild);
-
         //verifying user login status
-        const verifyRes = await fetch(`${process.env.BACKEND_BASE_URL}/user/verify`, {
+        const verifyRes = await fetch(`${window.CONFIG.BACKEND_BASE_URL}/user/verify`, {
             credentials: "include"
         });
 

@@ -26,6 +26,7 @@
   </style>
 </head>
 <body>
+  <script src="/config.js"></script>
   <script src="/scripts/navbar.js"></script>
 
   <div class="edit-profile-container">
@@ -76,7 +77,7 @@
     document.addEventListener("DOMContentLoaded", async () => {
       try {
         // Fetch current user info
-        const res = await fetch(`${process.env.BACKEND_BASE_URL}/user/verify`, {
+        const res = await fetch(`${window.CONFIG.BACKEND_BASE_URL}/user/verify`, {
           credentials: "include",
         });
         const data = await res.json();
@@ -112,7 +113,7 @@
             },
           };
 
-          const res = await fetch(`${process.env.BACKEND_BASE_URL}/user/update-profile`, {
+          const res = await fetch(`${window.CONFIG.BACKEND_BASE_URL}/user/update-profile`, {
             method: "PUT",
             credentials: "include",
             headers: { "Content-Type": "application/json" },

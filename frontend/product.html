@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <title>Product</title>
 </head>
+<script src="/config.js"></script>
 <script src="/scripts/navbar.js"></script>
 <body>
     <div class="basic-container">
@@ -33,7 +34,7 @@
         const body = document.body;
       let user;
       //Authenticating & navbar
-      fetch(`${process.env.BACKEND_BASE_URL}/user/verify`, { credentials: 'include' })
+      fetch(`${window.CONFIG.BACKEND_BASE_URL}/user/verify`, { credentials: 'include' })
       .then(res=> res.json())
       .then(res=> {
         user = res.user;
@@ -43,7 +44,7 @@
         const productId = urlParams.get('id');
 
         if(productId) {
-            fetch(`${process.env.BACKEND_BASE_URL}/product/${productId}`, { credentials: 'include' })
+            fetch(`${window.CONFIG.BACKEND_BASE_URL}/product/${productId}`, { credentials: 'include' })
             .then(res => res.json())
             .then(res => {
                 if(res.success === true) {
@@ -95,9 +96,9 @@
             }).then(res => {
                 const addToCartBtn = document.getElementById("add-to-cart-btn");
                 addToCartBtn.addEventListener('click', () => {
-                    fetch(`${process.env.BACKEND_BASE_URL}/cart/addItem/${productId}`, {credentials: 'include', method: 'POST'})
+                    fetch(`${window.CONFIG.BACKEND_BASE_URL}/cart/addItem/${productId}`, {credentials: 'include', method: 'POST'})
                     .then(() => {
-                        window.location.href = `${process.env.FRONTEND_BASE_URL}/cart`;
+                        window.location.href = `${window.CONFIG.FRONTEND_BASE_URL}/cart`;
                     })
                     .catch((error) => {
                         alert(error);
@@ -116,7 +117,7 @@
             <h3>An error occured</h3> 
             <h5>Error in Authentication</h5>
             <h4>${error}</h4>
-            <a href="${process.env.FRONTEND_BASE_URL}/home">Click to go to Homepage</a>
+            <a href="${window.CONFIG.FRONTEND_BASE_URL}/home">Click to go to Homepage</a>
             `;
       });
     </script>

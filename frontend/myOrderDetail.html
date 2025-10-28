@@ -15,6 +15,7 @@
     .order-summary { margin-top: 20px; font-weight: bold; text-align: right; }
   </style>
 </head>
+<script src="/config.js"></script>
 <script src="/scripts/navbar.js"></script>
 <body>
   <div class="order-container">
@@ -71,7 +72,7 @@
             const body = document.body;
             let user;
 
-            const verifyRes = await fetch(`${process.env.BACKEND_BASE_URL}/user/verify`, {
+            const verifyRes = await fetch(`${window.CONFIG.BACKEND_BASE_URL}/user/verify`, {
                 credentials: "include",
             });
 
@@ -91,7 +92,7 @@
       const params = new URLSearchParams(window.location.search);
       const orderId = params.get("orderId");
 
-      const res = await fetch(`${process.env.BACKEND_BASE_URL}/order/my-orders/${orderId}`, {
+      const res = await fetch(`${window.CONFIG.BACKEND_BASE_URL}/order/my-orders/${orderId}`, {
         credentials: "include"
       });
 

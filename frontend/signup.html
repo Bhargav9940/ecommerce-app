@@ -12,6 +12,7 @@
     />
     <title>Sign up</title>
   </head>
+  <script src="/config.js"></script>
   <script src="/scripts/navbar.js"></script>
   <body>
     <div id="signup-container" class="p-5 center">
@@ -66,7 +67,7 @@
       let user;
 
       //Authenticating
-      fetch(`${process.env.BACKEND_BASE_URL}/user/verify`, { credentials: 'include' })
+      fetch(`${window.CONFIG.BACKEND_BASE_URL}/user/verify`, { credentials: 'include' })
       .then(res=> res.json())
       .then(res=> {
         user = res.user;
@@ -85,7 +86,7 @@
           data[key] = value;
         });
 
-        fetch(`${process.env.BACKEND_BASE_URL}/user/register`, {
+        fetch(`${window.CONFIG.BACKEND_BASE_URL}/user/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -99,7 +100,7 @@
           })
           .then((res) => {
             if (res.success === true) {
-                window.location.href = `${process.env.FRONTEND_BASE_URL}/user/login`;
+                window.location.href = `${window.CONFIG.FRONTEND_BASE_URL}/user/login`;
             } else {
               if(resCode === 400 || resCode === 409) {
                 errorMessage.style.display = "block";
@@ -109,7 +110,7 @@
                 document.getElementById("signup-container").innerHTML = `
                   <h3>Status code: ${resCode}</h3>
                   <h5>Error: ${res.message}</h5>
-                  <a href="${process.env.FRONTEND_BASE_URL}/home">Click to go to Homepage</a>
+                  <a href="${window.CONFIG.FRONTEND_BASE_URL}/home">Click to go to Homepage</a>
                   `;
               }
             }
@@ -118,7 +119,7 @@
             document.getElementById("signup-container").innerHTML = `
             <h3>An error occured</h3> 
             <h4>${error}</h4>
-            <a href="${process.env.FRONTEND_BASE_URL}/home">Click to go to Homepage</a>
+            <a href="${window.CONFIG.FRONTEND_BASE_URL}/home">Click to go to Homepage</a>
             `;
           });
       });

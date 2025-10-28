@@ -12,6 +12,7 @@
     />
     <title>Checkout</title>
   </head>
+  <script src="/config.js"></script>
   <script src="/scripts/navbar.js"></script>
   <body>
     <div id="checkout">
@@ -47,7 +48,7 @@
       let mode;
 
       //Authenticating & navbar
-      fetch(`${process.env.BACKEND_BASE_URL}/user/verify`, {
+      fetch(`${window.CONFIG.BACKEND_BASE_URL}/user/verify`, {
         credentials: "include",
       })
         .then((res) => res.json())
@@ -60,7 +61,7 @@
           const productId = urlParams.get("id");
           mode = urlParams.get("mode");
           if (mode === "buyNow" && productId) {
-            fetch(`${process.env.BACKEND_BASE_URL}/product/${productId}`, {
+            fetch(`${window.CONFIG.BACKEND_BASE_URL}/product/${productId}`, {
               credentials: "include",
             })
               .then((res) => {
@@ -83,7 +84,7 @@
                 }
               });
           } else if (mode === "cart") {
-            fetch(`${process.env.BACKEND_BASE_URL}/cart/getCart`, {
+            fetch(`${window.CONFIG.BACKEND_BASE_URL}/cart/getCart`, {
               credentials: "include",
             })
               .then((res) => {
@@ -114,7 +115,7 @@
             <h3>An error occured</h3>
             <h5>Error in Authentication</h5>
             <h4>${error}</h4>
-            <a href="${process.env.FRONTEND_BASE_URL}home">Click to go to Homepage</a>
+            <a href="${window.CONFIG.FRONTEND_BASE_URL}home">Click to go to Homepage</a>
             `;
         });
 
@@ -140,7 +141,7 @@
                             <div class="col-md-8">
                                 <div class="card-body">
                                     <h5 class="card-title">
-                                        <a href="${process.env.FRONTEND_BASE_URL}/product/?id=${items[i]._id
+                                        <a href="${window.CONFIG.FRONTEND_BASE_URL}/product/?id=${items[i]._id
             }">${items[i].name}</a>
                                     </h5>
                                     <div class="quantity-container">
@@ -192,7 +193,7 @@
               quantity: item.quantity
             }));
 
-            const res = await fetch(`${process.env.BACKEND_BASE_URL}/order/create`, {
+            const res = await fetch(`${window.CONFIG.BACKEND_BASE_URL}/order/create`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json"
@@ -213,7 +214,7 @@
             window.dbOrderId = orderId;
 
             //create paypal order by orderId
-            const payRes = await fetch(`${process.env.BACKEND_BASE_URL}/payment/create-paypal-order/${orderId}`, {
+            const payRes = await fetch(`${window.CONFIG.BACKEND_BASE_URL}/payment/create-paypal-order/${orderId}`, {
               method: "POST",
               credentials: "include"
             });
@@ -224,7 +225,7 @@
 
           onApprove: async(data) => {
             //capturing payment
-            const captureRes = await fetch(`${process.env.BACKEND_BASE_URL}/payment/capture-paypal-order/${data.orderID}`, {
+            const captureRes = await fetch(`${window.CONFIG.BACKEND_BASE_URL}/payment/capture-paypal-order/${data.orderID}`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json"
@@ -276,7 +277,7 @@
       }
 
       async function cancelOrderByOrderId(orderId) {
-        const res = await fetch(`${process.env.BACKEND_BASE_URL}/order/cancel-order/${window.dbOrderId}`, {
+        const res = await fetch(`${window.CONFIG.BACKEND_BASE_URL}/order/cancel-order/${window.dbOrderId}`, {
           method: "POST",
           credentials:"include",
           headers: {
@@ -298,7 +299,7 @@
           let item = checkoutItemList.find((e) => e.productId === productId);
           if (item) {
             if (item.stock >= item.quantity + 1) {
-              fetch(`${process.env.BACKEND_BASE_URL}/cart/addItem/${productId}`, {
+              fetch(`${window.CONFIG.BACKEND_BASE_URL}/cart/addItem/${productId}`, {
                 credentials: "include",
                 method: "POST",
               })
@@ -324,7 +325,7 @@
           if (item) {
             if (item.quantity - 1 >= 0) {
               fetch(
-                `${process.env.BACKEND_BASE_URL}/removeItem/${productId}`,
+                `${window.CONFIG.BACKEND_BASE_URL}/removeItem/${productId}`,
                 {
                   credentials: "include",
                   method: "POST",

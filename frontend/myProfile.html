@@ -55,6 +55,7 @@
   </style>
 </head>
 <body>
+  <script src="/config.js"></script>
   <script src="/scripts/navbar.js"></script>
 
   <div class="profile-container" id="profile-container">
@@ -95,7 +96,7 @@
     document.addEventListener("DOMContentLoaded", async () => {
       try {
         // Verify user
-        const res = await fetch(`${process.env.BACKEND_BASE_URL}/user/verify`, {
+        const res = await fetch(`${window.CONFIG.BACKEND_BASE_URL}/user/verify`, {
           credentials: "include",
         });
         const data = await res.json();
