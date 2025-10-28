@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/index.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <title>Checkout</title>
+  </head>
+  <script src="/scripts/navbar.js"></script>
+  <body>
+    <div id="checkout">
+      <p class="fs-2 fw-text fw-semibold">Checkout</p>
+      <div id="checkout-container" class="d-flex align-items-start">
+        <div
+          id="checkout-container-left"
+          class="border border-dark rounded scrollable-container"
+        >
+          <div id="checkout-items" class="scrollable-container"></div>
+        </div>
+        <div id="checkout-container-right">
+          <div
+            id="checkout-total"
+            class="card p-3 border border-dark"
+            style="max-width: 400px"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AYm9tW_nkn7aZmr5aIulz5HGgh1OsBtwpmz1WsIXwI3TkRdy0NZ4wTZ4MM5rViLonH9bCuTA3uEr8AvK&currency=USD"></script>
+    <script>
+      //navbar
+      const body = document.body;
+      let user;
+      let checkoutItemList = [];
+      let mode;
+
+      //Authenticating & navbar
+      fetch(`${process.env.BACKEND_BASE_URL}/user/verify`, {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          user = res.user;
+
+          //fetch order
+          let resCode;
+          const urlParams = new URLSearchParams(window.location.search);
+          const productId = urlParams.get("id");
+          mode = urlParams.get("mode");
+          if (mode === "buyNow" && productId) {
+            fetch(`${process.env.BACKEND_BASE_URL}/product/${productId}`, {
+              credentials: "include",
+            })
+              .then((res) => {
+                resCode = res.status;
+                return res.json();
+              })
+              .then((res) => {
+                if (res.success === true) {
+                  const item = res.product;
+                  item.quantity = 1;
+                  checkoutItemList.push(item);
+                  displayCheckoutItems(checkoutItemList);
+                  displayTotalPrice(checkoutItemList);
+                } else {
+                  document.getElementById(
+                    "cart-container"
+                  ).innerHTML = `<h2>Status Code: ${resCode}</h2>
+                    <h3>Error: ${res.message}</h3>
+                    <a href="/home">Go to Homepage</a>`;
+                }
+              });
+          } else if (mode === "cart") {
+            fetch(`${process.env.BACKEND_BASE_URL}/cart/getCart`, {
+              credentials: "include",
+            })
+              .then((res) => {
+                return res.json();
+              })
+              .then((res) => {
+                checkoutItemList = res.items;
+                checkoutItemList = checkoutItemList?.filter(item => item.stock > 0);
+                displayCheckoutItems(checkoutItemList);
+              })
+              .catch((err) => {
+                document.getElementById("cart-container").innerHTML = `
+              <h2>Error occured</h2>
+              <h3>Error occured for cart checkout</h3>
+              <a href="/home">Go to Homepage</a>
+            `;
+              });
+          } else {
+            document.getElementById("cart-container").innerHTML = `
+            <h2>Error occured</h2>
+            <h3>Order is not selected</h3>
+            <a href="/home">Go to Homepage</a>
+            `;
+          }
+        })
+        .catch((error) => {
+          document.getElementById("cart-container").innerHTML = `
+            <h3>An error occured</h3>
+            <h5>Error in Authentication</h5>
+            <h4>${error}</h4>
+            <a href="${process.env.FRONTEND_BASE_URL}home">Click to go to Homepage</a>
+            `;
+        });
+
+      function displayCheckoutItems(items) {
+        const checkoutItems = document.getElementById("checkout-items");
+        checkoutItems.innerHTML = ``;
+        for (let i = 0; i < items.length; i++) {
+          const itemDiv = document.createElement("div");
+          itemDiv.className = `item-checkout-{i}`;
+          itemDiv.classList.add(
+            "card",
+            "p-4",
+            "mb-3",
+            "border",
+            "border-secondary"
+          );
+          itemDiv.innerHTML = `
+                        <div class="row g-0">
+                            <div class="col-md-4 product-image-container-cart">
+                                <img src="${items[i].images[0].url
+            }" class="card-img-top product-image" alt="product-image">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="${process.env.FRONTEND_BASE_URL}/product/?id=${items[i]._id
+            }">${items[i].name}</a>
+                                    </h5>
+                                    <div class="quantity-container">
+                                        <div class="btn-quantity" onclick="decreaseQuantity('${items[i].productId
+            }', '${mode}')">-</div>
+                                        <div id="btn-quantity-id" class="btn-quantity-text">${items[i].quantity
+            }</div>
+                                        <div id="btn-quantity-msg"></div>
+                                        <div class="btn-quantity" id='inc-${items[i].productId
+            }' onclick="increaseQuantity('${items[i].productId
+            }', '${mode}')" id="btn-quantity-add">+</div>
+                                    </div>
+                                    <span class="fs-5 fw-bold" >Price: ₹${(
+              items[i].price * items[i].quantity
+            ).toFixed(2)}</span>
+                                    <p class="card-text">Stock: ${items[i].stock
+            }</p>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+          checkoutItems.appendChild(itemDiv);
+        }
+        displayTotalPrice(items);
+      }
+
+      function displayTotalPrice(items) {
+        const checkoutTotal = document.getElementById("checkout-total");
+        let totalPrice = 0;
+        let shippingCharges = 0;
+        for (let item of items) {
+          totalPrice += Number((item.price * item.quantity).toFixed(2));
+        }
+        totalPrice = Number(totalPrice.toFixed(2));
+        shippingCharges = (totalPrice>=100) ? 0 : 50;
+        let payablePrice = Number((totalPrice + shippingCharges).toFixed(2));
+        checkoutTotal.innerHTML = `
+                <p>Product Price: ${totalPrice.toFixed(2)}</p>
+                <p>Shipping Charges: ${shippingCharges.toFixed(2)}</p>
+                <p class="fs-5 fw-semibold">Total: ${payablePrice.toFixed(2)}</p>
+                <div id="paypal-button-container"></div>
+                `;
+
+        //Rendering Paypal buttons
+        paypal.Buttons({
+          createOrder: async() => {
+            const orderItems = checkoutItemList.map(item => ({
+              product: item._id || item.productId,
+              quantity: item.quantity
+            }));
+
+            const res = await fetch(`${process.env.BACKEND_BASE_URL}/order/create`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              credentials: "include",
+              body: JSON.stringify({
+                orderItems,
+                paymentInfo: {method: "Paypal", status: "pending"}
+              })
+            });
+
+            const data = await res.json();
+            if(!data.success) {
+              alert("Order creation failed: ", data.message);
+              throw new Error("Order creation failed on server");
+            }
+            const orderId = data.order[0]._id;
+            window.dbOrderId = orderId;
+
+            //create paypal order by orderId
+            const payRes = await fetch(`${process.env.BACKEND_BASE_URL}/payment/create-paypal-order/${orderId}`, {
+              method: "POST",
+              credentials: "include"
+            });
+
+            const payData = await payRes.json();
+            return payData.id;  //paypalOrderId
+          },
+
+          onApprove: async(data) => {
+            //capturing payment
+            const captureRes = await fetch(`${process.env.BACKEND_BASE_URL}/payment/capture-paypal-order/${data.orderID}`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              credentials: "include",
+              body: JSON.stringify({
+                orderId: window.dbOrderId
+              })
+            });
+
+            const captureData = await captureRes.json();
+
+            if(captureData.success) {
+              alert("Payment successful! Order is confirmed");
+              window.location.href="/orders"   //redirects to order history page
+            }
+            else {
+              // call cancel order
+              const cancelRes = await cancelOrderByOrderId(window.dbOrderId);
+              if(cancelRes.success) {
+                alert("Payment failed! Order cancelled, Restoring stock...");
+              }
+              else {
+                alert(`Payment failed!. Problem cancelling order, orderID:${window.dbOrderId}`)
+              }
+            }
+          },
+          onCancel: async () => {
+            const cancelRes = await cancelOrderByOrderId(window.dbOrderId);
+            if(cancelRes.success) {
+              alert("Payment cancelled. Order cancelled");
+            }
+            else {
+              alert(`Payment cancelled. Problem cancelling order, orderID:${window.dbOrderId}`)
+            }
+          },
+          onError: async (err) => {
+            if(window.dbOrderId) {
+              const cancelRes = await cancelOrderByOrderId(window.dbOrderId);
+                if(cancelRes.success) {
+                  alert("Something went wrong with payment. Order cancelled");
+                }
+                else {
+                  alert(`Something went wrong with payment. Problem cancelling order, orderID:${window.dbOrderId}`);
+                }
+            }
+          }
+        }).render("#paypal-button-container");
+      }
+
+      async function cancelOrderByOrderId(orderId) {
+        const res = await fetch(`${process.env.BACKEND_BASE_URL}/order/cancel-order/${window.dbOrderId}`, {
+          method: "POST",
+          credentials:"include",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        const resJson = await res.json();
+        return resJson;
+      }
+
+      function increaseQuantity(productId, mode) {
+        if (mode === "buyNow") {
+          if (checkoutItemList[0].stock >= checkoutItemList[0].quantity + 1) {
+            checkoutItemList[0].quantity += 1;
+            displayCheckoutItems(checkoutItemList);
+          }
+        } else if (mode === "cart") {
+          let item = checkoutItemList.find((e) => e.productId === productId);
+          if (item) {
+            if (item.stock >= item.quantity + 1) {
+              fetch(`${process.env.BACKEND_BASE_URL}/cart/addItem/${productId}`, {
+                credentials: "include",
+                method: "POST",
+              })
+                .then(() => {
+                  window.location.reload();
+                })
+                .catch((err) => {
+                  console.log("Error at increaseQuantity: ", err);
+                });
+            }
+          }
+        }
+      }
+
+      function decreaseQuantity(productId, mode) {
+        if (mode === "buyNow") {
+          if (checkoutItemList[0].quantity - 1 > 0) {
+            checkoutItemList[0].quantity -= 1;
+            displayCheckoutItems(checkoutItemList);
+          }
+        } else if (mode === "cart") {
+          let item = checkoutItemList.find((e) => e.productId === productId);
+          if (item) {
+            if (item.quantity - 1 >= 0) {
+              fetch(
+                `${process.env.BACKEND_BASE_URL}/removeItem/${productId}`,
+                {
+                  credentials: "include",
+                  method: "POST",
+                }
+              )
+                .then(() => {
+                  window.location.reload();
+                })
+                .catch((err) => {
+                  console.log("Error at decreaseQuantity: ", err);
+                });
+            }
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

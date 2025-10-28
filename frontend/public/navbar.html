@@ -1,0 +1,125 @@
+<!-- navbar.html -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-danger px-4">
+  <a class="navbar-brand" href="/home">MyStore</a>
+
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#navbarSupportedContent"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ms-auto align-items-center">
+
+      <!-- Common link (visible to all) -->
+      <li class="nav-item">
+        <a class="nav-link text-light" href="/product/all">Products</a>
+      </li>
+
+      <!-- Cart link (only for logged-in users) -->
+      <li class="nav-item">
+        <a id="cart-link" class="nav-link d-none text-light" href="/cart">Cart</a>
+      </li>
+
+      <!-- Logged-in user dropdown -->
+      <li class="nav-item dropdown d-none" id="user-dropdown">
+        <a class="nav-link dropdown-toggle text-light" href="#" id="nav-username" data-bs-toggle="dropdown">User</a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="/my-profile">Profile</a></li>
+          <li><a class="dropdown-item" href="/my-orders">My Orders</a></li>
+          <li><a class="dropdown-item" id="logout-btn" href="/user/logout">Logout</a></li>
+        </ul>
+      </li>
+
+      <!-- Not logged-in links -->
+      <li class="nav-item d-none" id="login-link">
+        <a class="nav-link" href="/user/login">Login</a>
+      </li>
+      <li class="nav-item d-none" id="signup-link">
+        <a class="nav-link" href="/user/signup">Signup</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <nav class="navbar navbar-expand-lg bg-light bg-gradient">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/home">Ecommerce</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/home">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/product/all">All Products</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="nav-username">
+              Login/Signup
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/user/login" id="dropdown-option-1">Login</a></li>
+              <li><a class="dropdown-item" href="/user/signup" id="dropdown-option-2">Signup</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" style="display: none;" id="dropdown-option-3">Log out</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" id="cart-link" href="/cart" aria-disabled="true">Cart</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" id="nav-submit-btn" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+</nav> -->

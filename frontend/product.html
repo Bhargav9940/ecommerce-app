@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/index.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Product</title>
+</head>
+<script src="/scripts/navbar.js"></script>
+<body>
+    <div class="basic-container">
+        <div id="product-detail-container">
+            <div id="product-container" class="d-flex mt-3 ms-3 gap-3">
+                <div id="product-container-1" class="p-2">
+                </div>
+                <div id="product-container-2" class="p-2">
+                </div>
+                <div id="product-container-3" class="p-3">
+                </div>
+            </div>
+            <div id="container" class="m-3">
+                <p class="fs-3 text">Reviews</p>
+                <div id="review-container"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        const body = document.body;
+      let user;
+      //Authenticating & navbar
+      fetch(`${process.env.BACKEND_BASE_URL}/user/verify`, { credentials: 'include' })
+      .then(res=> res.json())
+      .then(res=> {
+        user = res.user;
+
+        //products from backend
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        if(productId) {
+            fetch(`${process.env.BACKEND_BASE_URL}/product/${productId}`, { credentials: 'include' })
+            .then(res => res.json())
+            .then(res => {
+                if(res.success === true) {
+                    const product = res.product;
+
+                    const productContainer1 = document.getElementById('product-container-1');
+                    const images = res.product.images;
+                    productContainer1.innerHTML = `
+                    <img src="${images[0].url}" class="card-img-top" alt="product-image">
+                    `;
+
+                    const productContainer2 = document.getElementById('product-container-2');
+                    productContainer2.innerHTML = `
+                    <img src="${product.images[0].url}" class="card-img-top" alt="product-image">
+                    `;
+
+                    const productContainer3 = document.getElementById('product-container-3');
+                    productContainer3.innerHTML = `
+                    <h5 class="card-title fs-4 text">${product.name}</h5>
+                    <p class="fs-6 text fw-bold">Rating: ${product.rating}</p>
+                    <span class="fs-5 fw-semibold">Price: ₹${product.price}</span>
+                    <p class="fs-6 text" id="stock-no">Available stock: ${product.stock}</p>
+                    <p class="card-text fs-6 text">${product.description}</p>
+                    <div id="buy-btn-container"><a id="buy-now-btn" href="/product/checkout/?id=${product._id}&mode=buyNow" class="d-block">Buy Now</a></div>
+                    <div class ="mt-3"><a id="add-to-cart-btn" class="d-block" style="">Add to Cart</a></div>
+                    `;
+                    if(product.stock <= 0) {
+                        document.getElementById("stock-no").innerText = "Item is not available!";
+                        document.getElementById("stock-no").classList.add("fs-4");
+                        document.getElementById("stock-no").classList.add("fw-bolder");
+                        document.getElementById("buy-btn-container").style.display = "none";
+                        document.getElementById("add-to-cart-btn").style.display = "none";
+                    }
+
+                    const reviews = product.reviews;
+                    reviews.forEach(review => {
+                        const reviewCard = document.createElement('div');
+                        reviewCard.innerHTML = `
+                        <div class="card" style="width: 100%;">
+                            <div class="card-body">
+                                <p class="card-title fs-6 fw-bold text">${review.name}</p>
+                                <p class="card-text">${review.comment}</p>
+                            </div>
+                        </div>
+                        `;
+                        document.getElementById('review-container').appendChild(reviewCard);
+                    })
+                }
+            }).then(res => {
+                const addToCartBtn = document.getElementById("add-to-cart-btn");
+                addToCartBtn.addEventListener('click', () => {
+                    fetch(`${process.env.BACKEND_BASE_URL}/cart/addItem/${productId}`, {credentials: 'include', method: 'POST'})
+                    .then(() => {
+                        window.location.href = `${process.env.FRONTEND_BASE_URL}/cart`;
+                    })
+                    .catch((error) => {
+                        alert(error);
+                    })
+                })
+            })
+        }
+        else {
+            document.getElementById("product-detail-container").innerHTML = `
+            <h1>Error Page</h1>
+            `;
+        }
+      })
+      .catch(error => {
+        document.getElementById("product-detail-container").innerHTML = `
+            <h3>An error occured</h3> 
+            <h5>Error in Authentication</h5>
+            <h4>${error}</h4>
+            <a href="${process.env.FRONTEND_BASE_URL}/home">Click to go to Homepage</a>
+            `;
+      });
+    </script>
+</body>
+</html>
