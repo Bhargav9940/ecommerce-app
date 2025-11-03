@@ -278,6 +278,13 @@
   justify-content: space-around;
 }
 
+#top-products-container {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 20px; 
+  justify-content: space-around;
+}
+
 #cart-total {
   display: flex;
   align-items: center;

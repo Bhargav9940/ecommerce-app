@@ -65,18 +65,18 @@
                     productContainer3.innerHTML = `
                     <h5 class="card-title fs-4 text">${product.name}</h5>
                     <p class="fs-6 text fw-bold">Rating: ${product.rating}</p>
-                    <span class="fs-5 fw-semibold">Price: ₹${product.price}</span>
+                    <span class="fs-5 fw-semibold">Price: $${product.price}</span>
                     <p class="fs-6 text" id="stock-no">Available stock: ${product.stock}</p>
-                    <p class="card-text fs-6 text">${product.description}</p>
                     <div id="buy-btn-container"><a id="buy-now-btn" href="/product/checkout/?id=${product._id}&mode=buyNow" class="d-block">Buy Now</a></div>
-                    <div class ="mt-3"><a id="add-to-cart-btn" class="d-block" style="">Add to Cart</a></div>
+                    <div id="add-to-cart-btn-container" class ="mt-3"><a id="add-to-cart-btn" class="d-block mb-4">Add to Cart</a></div>
+                    <p class="card-text fs-6 text">${product.description}</p>
                     `;
                     if(product.stock <= 0) {
                         document.getElementById("stock-no").innerText = "Item is not available!";
                         document.getElementById("stock-no").classList.add("fs-4");
                         document.getElementById("stock-no").classList.add("fw-bolder");
                         document.getElementById("buy-btn-container").style.display = "none";
-                        document.getElementById("add-to-cart-btn").style.display = "none";
+                        document.getElementById("add-to-cart-btn-container").style.display = "none";
                     }
 
                     const reviews = product.reviews;

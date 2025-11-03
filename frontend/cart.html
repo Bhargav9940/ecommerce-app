@@ -73,17 +73,14 @@
         });
 
       function displayCartItems(items) {
-        if(items.length == 0) {
-          document.getElementById("cart-container").innerHTML = "<h1>Nothing to show in cart.</h1>";
+        if(!items || items.length == 0) {
+          document.getElementById("cart-container").innerHTML = `<h1 class="p-4 text-danger border border-danger text-center rounded">Nothing to show in cart.</h1>`;
+          return;
         }
         let finalTotal = 0;
         const cartItems = document.getElementById("cart-items");
         cartItems.innerHTML = ``;
-
-        if(items.length == 0) {
-          cartItems.innerHTML = `<h4>Nothing to show in cart</h4>`;
-          return;
-        }
+        
         items.forEach((item) => {
           const itemDiv = document.createElement("div");
           itemDiv.className = "item-cart";
@@ -109,7 +106,7 @@
                             <div class="btn-quantity-text">${item.quantity}</div>
                             <div class="btn-quantity" onclick="increaseQuantity('${item.productId}')" id="btn-quantity-add">+</div>
                           </div>
-                          <span class="fs-5 fw-bold">Price: ₹${(item.price * item.quantity).toFixed(2)}</span>
+                          <span class="fs-5 fw-bold">Price: $${(item.price * item.quantity).toFixed(2)}</span>
                           <p class="card-text">Stock: ${item.stock}</p>
                         </div>
                       </div>
@@ -152,7 +149,7 @@
 
         const cartTotal = document.getElementById("cart-total");
         cartTotal.innerHTML = `
-        <p class=fs-4>Total: ${finalTotal.toFixed(2)}</p>
+        <p class=fs-4>Total: $${finalTotal.toFixed(2)}</p>
         `;
       }
 

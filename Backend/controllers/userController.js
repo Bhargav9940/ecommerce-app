@@ -22,9 +22,11 @@ const isLoggendIn = async(req, res) => {
 }
 
 const registerController = async (req, res) => {
+    // include state and postalCode in frontend
     try {
-        const { name, email, password, address, city, country, phone } = req.body;
-        if (!name || !email || !password || !address || !city || !country || !phone) {
+        const { name, email, password, address, city, country, phone, state, postalCode } = req.body;
+        console.log("phone: ", phone);
+        if (!name || !email || !password || !address || !city || !country || !phone || !state || !postalCode) {
             return res.status(400).send({
                 success: false,
                 message: "All fields are mandatory"
@@ -36,6 +38,12 @@ const registerController = async (req, res) => {
                 message: "Password must be greater than 6 characters."
             });
         }
+        if(postalCode.length != 6) {
+            return res.status(400).send({
+                success: false,
+                message: "Postal code must be of six digits."
+            });
+        }
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
             return res.status(409).send({
@@ -43,14 +51,19 @@ const registerController = async (req, res) => {
                 message: "email already exists"
             });
         }
+        const shippingInfo = {
+            address: address,
+            city: city,
+            state: state,
+            country: country,
+            postalCode: postalCode,
+            phone: phone
+        }
         const user = await userModel.create({
             name,
             email,
             password,
-            address,
-            city,
-            country,
-            phone
+            shippingInfo
         });
         res.status(201).send({
             success: true,

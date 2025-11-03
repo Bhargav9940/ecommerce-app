@@ -14,6 +14,10 @@ app.get('/config.js', (req, res) => {
                               PORT: "${process.env.PORT}"};`);
 });
 
+app.get('/', (req, res) => {
+  res.redirect('/home');
+});
+
 app.get('/navbar', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'navbar.html'));
 });

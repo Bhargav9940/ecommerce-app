@@ -115,7 +115,7 @@
       document.getElementById("payment-info-status").textContent = data.order.paymentInfo.status || "-";
       document.getElementById("payment-info-amount").textContent = data.order.paymentInfo.amount || "-";
       document.getElementById("payment-info-currency").textContent = data.order.paymentInfo.currency || "-";
-      document.getElementById("payment-info-paidat").textContent = new Date(data.order.paidAt).toLocaleString() || "-";
+      document.getElementById("payment-info-paidat").textContent = data.order.paidAt ? new Date(data.order.paidAt).toLocaleString() : "-";
       document.getElementById("payment-info-provider").textContent = data.order.paymentInfo.provider || "-";
       
       document.getElementById("shipping-info-address").textContent = data.order.shippingInfo.address || "-";
@@ -126,10 +126,10 @@
       document.getElementById("shipping-info-phone").textContent = data.order.shippingInfo.phone || "-";
 
 
-      document.getElementById("amount-info-totalprice").textContent = data.order.totalPrice || "-";
-      document.getElementById("amount-info-tax").textContent = data.order.tax || "-";
-      document.getElementById("amount-info-shippingcharges").textContent = data.order.shippingCharges || "-";
-      document.getElementById("amount-info-ordertotal").textContent = data.order.orderTotal || "-";
+      document.getElementById("amount-info-totalprice").textContent = (data.order.totalPrice) ? ("$" + data.order.totalPrice) : "-";
+      document.getElementById("amount-info-tax").textContent = (data.order.tax) ? ("$" + data.order.tax) : "-";
+      document.getElementById("amount-info-shippingcharges").textContent = (data.order.shippingCharges) ? ("$" + data.order.shippingCharges) : "-";
+      document.getElementById("amount-info-ordertotal").textContent = (data.order.orderTotal) ? ("$" + data.order.orderTotal) : "-";
 
       const itemsDiv = document.getElementById("items");
       data.order.orderItems.forEach(item => {

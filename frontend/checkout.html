@@ -154,7 +154,7 @@
             }' onclick="increaseQuantity('${items[i].productId
             }', '${mode}')" id="btn-quantity-add">+</div>
                                     </div>
-                                    <span class="fs-5 fw-bold" >Price: ₹${(
+                                    <span class="fs-5 fw-bold" >Price: $${(
               items[i].price * items[i].quantity
             ).toFixed(2)}</span>
                                     <p class="card-text">Stock: ${items[i].stock
@@ -179,9 +179,9 @@
         shippingCharges = (totalPrice>=100) ? 0 : 50;
         let payablePrice = Number((totalPrice + shippingCharges).toFixed(2));
         checkoutTotal.innerHTML = `
-                <p>Product Price: ${totalPrice.toFixed(2)}</p>
-                <p>Shipping Charges: ${shippingCharges.toFixed(2)}</p>
-                <p class="fs-5 fw-semibold">Total: ${payablePrice.toFixed(2)}</p>
+                <p>Product Price: $${totalPrice.toFixed(2)}</p>
+                <p>Shipping Charges: $${shippingCharges.toFixed(2)}</p>
+                <p class="fs-5 fw-semibold">Total: $${payablePrice.toFixed(2)}</p>
                 <div id="paypal-button-container"></div>
                 `;
 
@@ -240,7 +240,7 @@
 
             if(captureData.success) {
               alert("Payment successful! Order is confirmed");
-              window.location.href="/orders"   //redirects to order history page
+              window.location.href="/my-orders"   //redirects to order history page
             }
             else {
               // call cancel order
